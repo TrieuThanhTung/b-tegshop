@@ -42,9 +42,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(AuthException.class)
-    public ResponseEntity<ErrorMessage> authExceptionHandler(AuthException exception,
-                                                                       WebRequest request) {
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ErrorMessage> UserExceptionHandler(UserException exception,
+                                                             WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
                 exception.getMessage(),
                 request.getDescription(false));
@@ -58,5 +58,14 @@ public class GlobalExceptionHandler {
                 exception.getMessage(),
                 request.getDescription(false));
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<ErrorMessage> productExceptionHandler(ProductException exception,
+                                                                         WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 }

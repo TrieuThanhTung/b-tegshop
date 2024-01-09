@@ -2,7 +2,6 @@ package com.project.tegshop.controller;
 
 import com.project.tegshop.dto.LoginDto;
 import com.project.tegshop.dto.UserDto;
-import com.project.tegshop.exception.AuthException;
 import com.project.tegshop.exception.RegisterTokenException;
 import com.project.tegshop.model.EmailDetails;
 import com.project.tegshop.service.auth.AuthService;

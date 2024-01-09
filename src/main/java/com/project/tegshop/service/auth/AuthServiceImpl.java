@@ -2,7 +2,7 @@ package com.project.tegshop.service.auth;
 
 import com.project.tegshop.dto.LoginDto;
 import com.project.tegshop.dto.UserDto;
-import com.project.tegshop.exception.AuthException;
+import com.project.tegshop.exception.UserException;
 import com.project.tegshop.exception.RegisterTokenException;
 import com.project.tegshop.model.RegisterToken;
 import com.project.tegshop.model.Role;
@@ -49,10 +49,10 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public String registerUser(UserDto userDto) throws AuthException {
+    public String registerUser(UserDto userDto) throws UserException {
         Optional<UserEntity> existsUser = userRepository.findByEmailId(userDto.getEmailId());
         if(existsUser.isPresent()) {
-            throw new AuthException(GenericMessage.EMAIL_ALREADY_IN_USE);
+            throw new UserException(GenericMessage.EMAIL_ALREADY_IN_USE);
         }
 
         UserEntity user = UserEntity.builder()
@@ -77,16 +77,16 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public String loginUser(LoginDto loginDto) throws AuthException {
+    public String loginUser(LoginDto loginDto) throws UserException {
         UserEntity existsUser = userRepository.findByEmailId(loginDto.getEmailId())
-                .orElseThrow(() -> new AuthException(GenericMessage.USER_WITH_GIVEN_EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new UserException(GenericMessage.USER_WITH_GIVEN_EMAIL_NOT_FOUND));
 
         if(!existsUser.getEnabled()) {
-            throw new AuthException(GenericMessage.USER_WAS_NOT_VERIFIED);
+            throw new UserException(GenericMessage.USER_WAS_NOT_VERIFIED);
         }
 
         if(!passwordIsMatched(loginDto.getPassword(), existsUser.getPassword())) {
-            throw new AuthException(GenericMessage.PASSWORD_NOT_MATCH);
+            throw new UserException(GenericMessage.PASSWORD_NOT_MATCH);
         }
 
         Authentication authentication = authenticationManager.authenticate(

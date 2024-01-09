@@ -15,4 +15,6 @@ public interface GenericMessage {
 
     String SUBJECT_MAIL = "Mail verify registration";
     String ERROR_WHILE_SENDING_EMAIL = "Error while sending email";
+    String ADD_NEW_PRODUCT = "Add new product successfully";
+    String PRODUCT_ALREADY_EXISTS = "Product already exists with given name";
 }
