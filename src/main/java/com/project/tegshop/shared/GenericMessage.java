@@ -8,6 +8,7 @@ public interface GenericMessage {
             " Please click link in 30 minutes to confirm registration.";
     String REGISTER_SUCCESSFULLY = "Register successfully";
     String LOGIN_SUCCESSFULLY = "Login successfully";
+    String REGISTER_SELLER_SUCCESSFULLY = "Register seller successfully";
     String REGISTRATION_TOKEN_NOT_FOUND = "Registration token not found!";
     String REGISTRATION_TOKEN_IS_EXPIRED = "Registration token is expired";
     String USER_VERIFIED_REGISTRATION = "User verified registration";

@@ -51,6 +51,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorMessage> userNotFoundExceptionHandler(UserNotFoundException exception,
+                                                             WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(RegisterTokenException.class)
     public ResponseEntity<ErrorMessage> registerNotFoundExceptionHandler(RegisterTokenException exception,
                                                                          WebRequest request) {

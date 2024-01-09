@@ -23,7 +23,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-//    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('SELLER')")
     @PostMapping("/product")
     public ResponseEntity<GenericResponse> addNewProductHandler(@Valid @RequestBody ProductDto productDto)
             throws UserException, ProductException {
