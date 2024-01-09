@@ -3,12 +3,13 @@ package com.project.tegshop.controller;
 import com.project.tegshop.dto.LoginDto;
 import com.project.tegshop.dto.UserDto;
 import com.project.tegshop.exception.AuthException;
-import com.project.tegshop.model.UserEntity;
+import com.project.tegshop.exception.RegisterTokenException;
 import com.project.tegshop.service.auth.AuthService;
 import com.project.tegshop.shared.GenericMessage;
 import com.project.tegshop.shared.GenericResponse;
 import com.project.tegshop.shared.MessageResponse;
 import com.project.tegshop.shared.response.TokenResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,12 +23,21 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<GenericResponse> registerHandler(@Valid @RequestBody UserDto userDto) throws AuthException {
+    public ResponseEntity<GenericResponse> registerHandler(@Valid @RequestBody UserDto userDto,
+                                                           final HttpServletRequest request) throws AuthException {
+        String token = authService.registerUser(userDto);
+        String url = applicationUrl(request) + "/api/auth/verify-registration?token=" + token;
 
-        UserEntity user = authService.registerUser(userDto);
-
-        GenericResponse response = new GenericResponse(GenericMessage.REGISTER_SUCCESSFULLY, userDto);
+        GenericResponse response = new GenericResponse(GenericMessage.LINK_CONFIRM_IS_SENT, url);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/verify-registration")
+    public ResponseEntity<MessageResponse> verifyRegistrationHandler(@RequestParam("token") String token)
+            throws RegisterTokenException {
+        String message = authService.verifyRegistration(token);
+
+        return new ResponseEntity<>(new MessageResponse(message), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/login")
@@ -39,9 +49,7 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/hello")
-    public ResponseEntity<GenericResponse> helloWorld(@Valid @RequestBody LoginDto loginDto) {
-        System.out.println("abc231231");
-        return new ResponseEntity<>(new GenericResponse("why not accept request body: " + loginDto.getEmailId(), loginDto), HttpStatus.OK);
+    private String applicationUrl(HttpServletRequest request) {
+        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 }

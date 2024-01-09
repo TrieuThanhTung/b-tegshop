@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> requestBodyValidExceptionHandler(MethodArgumentNotValidException exception,
                                                              WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
-                exception.getMessage(),
+                exception.getBindingResult().getFieldError().getDefaultMessage(),
                 request.getDescription(false));
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
@@ -49,5 +49,14 @@ public class GlobalExceptionHandler {
                 exception.getMessage(),
                 request.getDescription(false));
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RegisterTokenException.class)
+    public ResponseEntity<ErrorMessage> registerNotFoundExceptionHandler(RegisterTokenException exception,
+                                                                         WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 }
