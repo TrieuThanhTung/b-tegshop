@@ -4,7 +4,9 @@ import com.project.tegshop.dto.LoginDto;
 import com.project.tegshop.dto.UserDto;
 import com.project.tegshop.exception.AuthException;
 import com.project.tegshop.exception.RegisterTokenException;
+import com.project.tegshop.model.EmailDetails;
 import com.project.tegshop.service.auth.AuthService;
+import com.project.tegshop.service.mail.MailService;
 import com.project.tegshop.shared.GenericMessage;
 import com.project.tegshop.shared.GenericResponse;
 import com.project.tegshop.shared.MessageResponse;
@@ -19,14 +21,25 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    @Autowired
     private AuthService authService;
+    private MailService mailService;
+
+    @Autowired
+    public AuthController(AuthService authService, MailService mailService) {
+        this.authService = authService;
+        this.mailService = mailService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<GenericResponse> registerHandler(@Valid @RequestBody UserDto userDto,
-                                                           final HttpServletRequest request) throws AuthException {
+                                                           final HttpServletRequest request) throws Exception {
         String token = authService.registerUser(userDto);
         String url = applicationUrl(request) + "/api/auth/verify-registration?token=" + token;
+
+        EmailDetails emailDetails = new EmailDetails(userDto.getEmailId(),
+                GenericMessage.SUBJECT_MAIL,
+                "Link verify: \n" + url);
+        mailService.sendSimpleMail(emailDetails);
 
         GenericResponse response = new GenericResponse(GenericMessage.LINK_CONFIRM_IS_SENT, url);
         return new ResponseEntity<>(response, HttpStatus.OK);
