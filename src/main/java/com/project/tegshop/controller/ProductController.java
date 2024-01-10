@@ -2,7 +2,9 @@ package com.project.tegshop.controller;
 
 import com.project.tegshop.dto.ProductDto;
 import com.project.tegshop.exception.ProductException;
+import com.project.tegshop.exception.ProductNotFoundException;
 import com.project.tegshop.exception.UserException;
+import com.project.tegshop.model.Category;
 import com.project.tegshop.model.Product;
 import com.project.tegshop.service.product.ProductService;
 import com.project.tegshop.shared.GenericMessage;
@@ -12,10 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -29,5 +30,42 @@ public class ProductController {
             throws UserException, ProductException {
         Product product = productService.addNewProduct(productDto);
         return new ResponseEntity<>(new GenericResponse(GenericMessage.ADD_NEW_PRODUCT, product), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/products")
+    public ResponseEntity<?> getAllProductsHandler() {
+        List<Product> productList = productService.getAllProducts();
+
+        return new ResponseEntity<>(new GenericResponse(GenericMessage.GET_ALL_PRODUCTS, productList), HttpStatus.OK);
+    }
+
+    @GetMapping("/product/{id}")
+    public ResponseEntity<GenericResponse> getProductByIdHandler(@PathVariable("id") Integer id)
+            throws ProductNotFoundException {
+        Product product = productService.getProductById(id);
+        return new ResponseEntity<>(new GenericResponse(GenericMessage.GET_PRODUCT_BY_ID, product), HttpStatus.OK);
+    }
+
+    @GetMapping("/products/{category}")
+    public ResponseEntity<GenericResponse> getProductsByCategoryHandler(@PathVariable("category") Category category)
+            throws ProductNotFoundException {
+        List<Product> productList = productService.getProductsByCategory(category);
+
+        return new ResponseEntity<>(new GenericResponse(GenericMessage.GET_PRODUCT, productList), HttpStatus.OK);
+    }
+
+    @GetMapping("/products/seller")
+    public ResponseEntity<GenericResponse> getProductBySellerIdHandler(@RequestParam("id") Integer id)
+            throws ProductNotFoundException {
+        List<Product> productList = productService.getProductBySellerId(id);
+
+        return new ResponseEntity<>(new GenericResponse(GenericMessage.GET_PRODUCT, productList), HttpStatus.OK);
+    }
+
+    @PutMapping("/product")
+    public ResponseEntity<GenericResponse> updateProductHandler(@Valid @RequestBody ProductDto productDto) {
+        Product product = productService.updateProduct(productDto);
+
+        return new ResponseEntity<>(new GenericResponse(GenericMessage.PRODUCT_UPDATE, product), HttpStatus.OK);
     }
 }

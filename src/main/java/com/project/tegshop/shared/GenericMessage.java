@@ -18,4 +18,11 @@ public interface GenericMessage {
     String ERROR_WHILE_SENDING_EMAIL = "Error while sending email";
     String ADD_NEW_PRODUCT = "Add new product successfully";
     String PRODUCT_ALREADY_EXISTS = "Product already exists with given name";
+    String GET_ALL_PRODUCTS = "Get all products successfully";
+    String GET_PRODUCT = "Get product successfully";
+    String GET_PRODUCT_BY_ID = "Get product by id successfully";
+    String PRODUCT_NOT_FOUND = "Product not found with given id!";
+
+    String PRODUCT_UPDATE = "Update product successfully";
+
 }

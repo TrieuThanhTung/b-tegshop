@@ -26,6 +26,11 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthEntryPoint jwtAuthEntryPoint;
 
+    private final String[] WHITE_LIST_URLS_PRODUCT = {
+            "/api/products/**",
+            "/api/product/**"
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -35,6 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req ->
                         req
                                 .requestMatchers( "/api/auth/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, WHITE_LIST_URLS_PRODUCT).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());

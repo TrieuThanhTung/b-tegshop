@@ -17,7 +17,6 @@ import java.util.List;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Integer productId;
     @Column(unique = true, nullable = false)
     private String productName;
