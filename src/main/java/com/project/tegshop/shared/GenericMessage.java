@@ -13,7 +13,6 @@ public interface GenericMessage {
     String REGISTRATION_TOKEN_IS_EXPIRED = "Registration token is expired";
     String USER_VERIFIED_REGISTRATION = "User verified registration";
     String USER_WAS_NOT_VERIFIED = "User wasn't verified";
-
     String SUBJECT_MAIL = "Mail verify registration";
     String ERROR_WHILE_SENDING_EMAIL = "Error while sending email";
     String ADD_NEW_PRODUCT = "Add new product successfully";
@@ -22,7 +21,9 @@ public interface GenericMessage {
     String GET_PRODUCT = "Get product successfully";
     String GET_PRODUCT_BY_ID = "Get product by id successfully";
     String PRODUCT_NOT_FOUND = "Product not found with given id!";
-
     String PRODUCT_UPDATE = "Update product successfully";
-
+    String PRODUCT_IS_NOT_YOURS = "Product in not yours!";
+    String PRODUCT_UPDATE_QUANTITY = "Update product quantity successfully";
+    String PRODUCT_QUANTITY_LIMIT = "Product quantity must be greater or equal to 0 and less or equal to 100!";
+    String PRODUCT_DELETE = "Delete product successfully";
 }

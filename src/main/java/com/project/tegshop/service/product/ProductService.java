@@ -20,5 +20,9 @@ public interface ProductService {
 
     List<Product> getProductBySellerId(Integer id) throws ProductNotFoundException;
 
-    Product updateProduct(ProductDto productDto);
+    Product updateProduct(Integer id, ProductDto productDto) throws ProductNotFoundException, UserException, ProductException;
+
+    Product updateProductQuantity(Integer id, Integer quantity) throws ProductNotFoundException, UserException, ProductException;
+
+    String deleteProductById(Integer id) throws ProductNotFoundException, UserException, ProductException;
 }

@@ -1,7 +1,6 @@
 package com.project.tegshop.dto;
 
 import com.project.tegshop.model.Category;
-import com.project.tegshop.model.Status;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Max;

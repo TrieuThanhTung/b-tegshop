@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -47,10 +48,15 @@ public class ProductServiceImpl implements ProductService{
                 .manufacturer(productDto.getManufacturer())
                 .quantity(productDto.getQuantity())
                 .category(productDto.getCategory())
-                .status(Status.AVAILABLE)
                 .images(productDto.getImages())
                 .user(currentUser)
                 .build();
+
+        if(productDto.getQuantity() == 0) {
+            product.setStatus(Status.OUTOFSTOCK);
+        } else {
+            product.setStatus(Status.AVAILABLE);
+        }
 
         return productRepository.save(product);
     }
@@ -86,9 +92,65 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product updateProduct(ProductDto productDto) {
-        return null;
+    public Product updateProduct(Integer id, ProductDto productDto)
+            throws ProductNotFoundException, UserException, ProductException {
+        Product product = preCheckUpdateAndDelete(id);
+
+        product.setProductName(productDto.getProductName());
+        product.setPrice(productDto.getPrice());
+        product.setDescription(productDto.getDescription());
+        product.setManufacturer(productDto.getManufacturer());
+        product.setQuantity(productDto.getQuantity());
+        product.setCategory(productDto.getCategory());
+        product.setImages(productDto.getImages());
+
+        if(productDto.getQuantity() == 0) {
+            product.setStatus(Status.OUTOFSTOCK);
+        } else {
+            product.setStatus(Status.AVAILABLE);
+        }
+
+        return productRepository.save(product);
     }
 
+    @Override
+    public Product updateProductQuantity(Integer id, Integer quantity) throws ProductNotFoundException, UserException, ProductException {
+        if(quantity < 0 || quantity > 100) {
+            throw new ProductException(GenericMessage.PRODUCT_QUANTITY_LIMIT);
+        }
 
+        Product product = preCheckUpdateAndDelete(id);
+
+        product.setQuantity(quantity);
+        if(quantity == 0) {
+            product.setStatus(Status.OUTOFSTOCK);
+        } else {
+            product.setStatus(Status.AVAILABLE);
+        }
+
+        return productRepository.save(product);
+    }
+
+    @Override
+    public String deleteProductById(Integer id) throws ProductNotFoundException, UserException, ProductException {
+        Product product = preCheckUpdateAndDelete(id);
+        productRepository.delete(product);
+        return GenericMessage.PRODUCT_DELETE;
+    }
+
+    private Product preCheckUpdateAndDelete(Integer id) throws ProductNotFoundException, UserException, ProductException {
+        String userEmail = userService.getCurrentUserEmail();
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(GenericMessage.PRODUCT_NOT_FOUND));
+
+        UserEntity user = userRepository.findByEmailId(userEmail)
+                .orElseThrow(() -> new UserException(GenericMessage.USER_WITH_GIVEN_EMAIL_NOT_FOUND));
+
+        if(!Objects.equals(product.getUser().getUserId(), user.getUserId())) {
+            throw new ProductException(GenericMessage.PRODUCT_IS_NOT_YOURS);
+        }
+
+        return product;
+    }
 }

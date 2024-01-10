@@ -9,6 +9,7 @@ import com.project.tegshop.model.Product;
 import com.project.tegshop.service.product.ProductService;
 import com.project.tegshop.shared.GenericMessage;
 import com.project.tegshop.shared.GenericResponse;
+import com.project.tegshop.shared.MessageResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,10 +63,32 @@ public class ProductController {
         return new ResponseEntity<>(new GenericResponse(GenericMessage.GET_PRODUCT, productList), HttpStatus.OK);
     }
 
-    @PutMapping("/product")
-    public ResponseEntity<GenericResponse> updateProductHandler(@Valid @RequestBody ProductDto productDto) {
-        Product product = productService.updateProduct(productDto);
+    @PreAuthorize("hasAnyAuthority('SELLER')")
+    @PutMapping("/product/{id}")
+    public ResponseEntity<GenericResponse> updateProductHandler(@PathVariable("id") Integer id,
+                                                                @Valid @RequestBody ProductDto productDto)
+            throws UserException, ProductNotFoundException, ProductException {
+        Product product = productService.updateProduct(id, productDto);
 
         return new ResponseEntity<>(new GenericResponse(GenericMessage.PRODUCT_UPDATE, product), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('SELLER')")
+    @PutMapping("/product/{id}/quantity/{quantity}")
+    public ResponseEntity<GenericResponse> updateProductQuantityHandler(@PathVariable("id") Integer id,
+                                                                @PathVariable("quantity") Integer quantity)
+            throws UserException, ProductNotFoundException, ProductException {
+        Product product = productService.updateProductQuantity(id, quantity);
+
+        return new ResponseEntity<>(new GenericResponse(GenericMessage.PRODUCT_UPDATE_QUANTITY, product), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('SELLER', 'ADMIN')")
+    @DeleteMapping("/product/{id}")
+    public ResponseEntity<MessageResponse> deleteProductByIdHandler(@PathVariable("id") Integer id)
+            throws UserException, ProductNotFoundException, ProductException {
+        String message = productService.deleteProductById(id);
+
+        return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
     }
 }
