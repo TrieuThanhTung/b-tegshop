@@ -26,4 +26,8 @@ public interface GenericMessage {
     String PRODUCT_UPDATE_QUANTITY = "Update product quantity successfully";
     String PRODUCT_QUANTITY_LIMIT = "Product quantity must be greater or equal to 0 and less or equal to 100!";
     String PRODUCT_DELETE = "Delete product successfully";
+    String PRODUCT_OUT_OF_STOCK = "Product out of stock!";
+    String ORDER_QUANTITY_EXCEPTION = "Order's quantity is greater than current product quantity";
+    String ADD_ITEM_TO_CART = "Add item to cart successfully";
+    String GET_CART = "Get cart successfully";
 }

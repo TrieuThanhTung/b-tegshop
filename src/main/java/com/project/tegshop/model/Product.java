@@ -31,7 +31,7 @@ public class Product {
     private Status status;
     @Column(columnDefinition = "BLOB")
     private List<String> images;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "userId",

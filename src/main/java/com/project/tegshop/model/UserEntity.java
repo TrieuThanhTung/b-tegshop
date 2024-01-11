@@ -29,6 +29,14 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(
+            name = "cart_id",
+            referencedColumnName = "cartId",
+            foreignKey = @ForeignKey(name = "FK_USER_CART")
+    )
+    private Cart cart;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<Address> addresses;
     private Boolean enabled;

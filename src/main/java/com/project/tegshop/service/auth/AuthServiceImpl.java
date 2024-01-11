@@ -4,6 +4,7 @@ import com.project.tegshop.dto.LoginDto;
 import com.project.tegshop.dto.UserDto;
 import com.project.tegshop.exception.UserException;
 import com.project.tegshop.exception.RegisterTokenException;
+import com.project.tegshop.model.Cart;
 import com.project.tegshop.model.RegisterToken;
 import com.project.tegshop.model.Role;
 import com.project.tegshop.model.UserEntity;
@@ -61,6 +62,7 @@ public class AuthServiceImpl implements AuthService{
                 .emailId(userDto.getEmailId())
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .role(Role.CUSTOMER)
+                .cart(new Cart())
                 .addresses(new ArrayList<>())
                 .enabled(false)
                 .build();

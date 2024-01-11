@@ -83,7 +83,7 @@ public class ProductController {
         return new ResponseEntity<>(new GenericResponse(GenericMessage.PRODUCT_UPDATE_QUANTITY, product), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('SELLER', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SELLER')")
     @DeleteMapping("/product/{id}")
     public ResponseEntity<MessageResponse> deleteProductByIdHandler(@PathVariable("id") Integer id)
             throws UserException, ProductNotFoundException, ProductException {
