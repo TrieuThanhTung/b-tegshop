@@ -30,4 +30,8 @@ public interface GenericMessage {
     String ORDER_QUANTITY_EXCEPTION = "Order's quantity is greater than current product quantity";
     String ADD_ITEM_TO_CART = "Add item to cart successfully";
     String GET_CART = "Get cart successfully";
+    String CART_EMPTY = "Cart empty!";
+    String CART_DELETE_ITEM = "Delete product from cart successfully";
+    String CART_ITEM_NOT_ADDED = "Product is not added to cart!";
+    String CLEAR_CART = "Delete all items in cart successfully";
 }

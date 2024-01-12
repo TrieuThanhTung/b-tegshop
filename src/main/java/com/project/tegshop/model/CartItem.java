@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Integer cartItemId;
 
     @ManyToOne

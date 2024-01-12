@@ -8,4 +8,5 @@ import com.project.tegshop.model.CartItem;
 
 public interface CartItemService {
     CartItem createCartItem(CartItemDto cartItemDto) throws ProductNotFoundException, ProductException, CartItemException;
+    void deleteCartItem(CartItem cartItem);
 }

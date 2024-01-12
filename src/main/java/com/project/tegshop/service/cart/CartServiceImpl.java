@@ -1,10 +1,7 @@
 package com.project.tegshop.service.cart;
 
 import com.project.tegshop.dto.CartItemDto;
-import com.project.tegshop.exception.CartItemException;
-import com.project.tegshop.exception.ProductException;
-import com.project.tegshop.exception.ProductNotFoundException;
-import com.project.tegshop.exception.UserNotFoundException;
+import com.project.tegshop.exception.*;
 import com.project.tegshop.model.Cart;
 import com.project.tegshop.model.CartItem;
 import com.project.tegshop.model.UserEntity;
@@ -51,6 +48,7 @@ public class CartServiceImpl implements CartService{
                     }
                     cartUser.setCartTotal(cartUser.getCartTotal() + (long)cartItem.getQuantity() * cartItem.getProduct().getPrice());
                     isHasItem = true;
+                    break;
                 }
             }
 
@@ -67,8 +65,63 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public Cart getCart() throws UserNotFoundException {
-        UserEntity userEntity = userService.getCurrentUser();
+        UserEntity currentUser = userService.getCurrentUser();
 
-        return userEntity.getCart();
+        return currentUser.getCart();
+    }
+
+    @Override
+    public String deleteItem(Integer id)
+            throws UserNotFoundException, CartItemException, CartItemNotFoundException {
+        UserEntity currentUser = userService.getCurrentUser();
+
+        Cart cartUser = currentUser.getCart();
+        List<CartItem> cartItemList = cartUser.getCartItemList();
+
+        if(cartItemList.size() == 0) {
+            throw new CartItemException(GenericMessage.CART_EMPTY);
+        }
+
+        boolean isHasItem = false;
+        for(CartItem c : cartItemList) {
+            if(c.getCartItemId() == id) {
+                cartUser.setCartTotal(cartUser.getCartTotal() - (long) c.getQuantity() * c.getProduct().getPrice());
+                cartItemList.remove(c);
+                cartItemService.deleteCartItem(c);
+                isHasItem = true;
+                break;
+            }
+        }
+
+        if(!isHasItem) {
+            throw new CartItemNotFoundException(GenericMessage.CART_ITEM_NOT_ADDED);
+        }
+        cartRepository.save(cartUser);
+
+        return GenericMessage.CART_DELETE_ITEM;
+    }
+
+    @Override
+    public String clearItem() throws UserNotFoundException, CartItemException {
+        UserEntity currentUser = userService.getCurrentUser();
+
+        Cart cartUser = currentUser.getCart();
+        List<CartItem> cartItemList = cartUser.getCartItemList();
+
+        if(cartItemList.size() == 0) {
+            throw new CartItemException(GenericMessage.CART_EMPTY);
+        }
+
+        for(CartItem c : cartItemList) {
+            cartItemList.remove(c);
+            cartItemService.deleteCartItem(c);
+        }
+
+        cartItemList.clear();
+        cartUser.setCartTotal(0L);
+
+        cartRepository.save(cartUser);
+
+        return GenericMessage.CLEAR_CART;
     }
 }

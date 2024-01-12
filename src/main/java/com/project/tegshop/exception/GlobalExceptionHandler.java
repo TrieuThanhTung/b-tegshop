@@ -95,4 +95,13 @@ public class GlobalExceptionHandler {
                 request.getDescription(false));
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(CartItemNotFoundException.class)
+    public ResponseEntity<ErrorMessage> cartItemNotFoundExceptionHandler(CartItemNotFoundException exception,
+                                                                 WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
 }

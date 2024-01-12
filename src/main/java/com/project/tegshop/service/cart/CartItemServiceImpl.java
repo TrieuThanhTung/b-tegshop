@@ -7,6 +7,7 @@ import com.project.tegshop.exception.ProductNotFoundException;
 import com.project.tegshop.model.CartItem;
 import com.project.tegshop.model.Product;
 import com.project.tegshop.model.Status;
+import com.project.tegshop.repository.CartItemRepository;
 import com.project.tegshop.repository.ProductRepository;
 import com.project.tegshop.shared.GenericMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 public class CartItemServiceImpl implements CartItemService{
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     @Override
     public CartItem createCartItem(CartItemDto cartItemDto)
@@ -37,5 +40,10 @@ public class CartItemServiceImpl implements CartItemService{
         cartItem.setQuantity(cartItemDto.getQuantity());
 
         return cartItem;
+    }
+
+    @Override
+    public void deleteCartItem(CartItem cartItem) {
+        cartItemRepository.delete(cartItem);
     }
 }
