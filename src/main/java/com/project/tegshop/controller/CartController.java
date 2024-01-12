@@ -23,6 +23,7 @@ public class CartController {
 
     @PreAuthorize("hasAnyAuthority('CUSTOMER', 'SELLER')")
     @PostMapping("/cart/add")
+    @CrossOrigin
     public ResponseEntity<GenericResponse> addItemToCartHandler(@Valid @RequestBody CartItemDto cartItemDto)
             throws UserNotFoundException, CartItemException, ProductNotFoundException, ProductException {
         CartItem cartItem = cartService.addItemToCart(cartItemDto);

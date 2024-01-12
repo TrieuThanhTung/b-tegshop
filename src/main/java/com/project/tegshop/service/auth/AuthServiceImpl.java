@@ -50,10 +50,28 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public String registerUser(UserDto userDto) throws UserException {
+    public String registerUser(UserDto userDto) throws UserException, RegisterTokenException {
         Optional<UserEntity> existsUser = userRepository.findByEmailId(userDto.getEmailId());
-        if(existsUser.isPresent()) {
-            throw new UserException(GenericMessage.EMAIL_ALREADY_IN_USE);
+
+        if(existsUser.isPresent() ) {
+            if(existsUser.get().getEnabled()) {
+                throw new UserException(GenericMessage.EMAIL_ALREADY_IN_USE);
+            }
+
+            UserEntity currentUser = existsUser.get();
+            currentUser.setFirstName(userDto.getFirstName());
+            currentUser.setLastName(userDto.getLastName());
+            currentUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            userRepository.save(currentUser);
+
+            RegisterToken existRegisterToken = registerTokenRepository.findByUserId(currentUser.getUserId())
+                    .orElseThrow(() -> new RegisterTokenException(GenericMessage.REGISTRATION_TOKEN_NOT_FOUND));
+
+            existRegisterToken.setToken(UUID.randomUUID().toString().substring(0, 6));
+            existRegisterToken.setExpiredTime(LocalDateTime.now().plusMinutes(expirationTime));
+            registerTokenRepository.save(existRegisterToken);
+
+            return existRegisterToken.getToken();
         }
 
         UserEntity user = UserEntity.builder()
@@ -68,14 +86,9 @@ public class AuthServiceImpl implements AuthService{
                 .build();
         userRepository.save(user);
 
-        RegisterToken registerToken = RegisterToken.builder()
-                .expiredTime(LocalDateTime.now().plusMinutes(expirationTime))
-                .token(UUID.randomUUID().toString())
-                .user(user)
-                .build();
-        registerTokenRepository.save(registerToken);
+        String registerToken = generateTokenRegister(user);
 
-        return registerToken.getToken();
+        return registerToken;
     }
 
     @Override
@@ -125,5 +138,15 @@ public class AuthServiceImpl implements AuthService{
 
     private boolean passwordIsMatched(String password, String encodePassword) {
         return passwordEncoder.matches(password, encodePassword);
+    }
+
+    private String generateTokenRegister(UserEntity user) {
+        RegisterToken registerToken = RegisterToken.builder()
+                .expiredTime(LocalDateTime.now().plusMinutes(expirationTime))
+                .token(UUID.randomUUID().toString())
+                .user(user)
+                .build();
+        registerTokenRepository.save(registerToken);
+        return registerToken.getToken();
     }
 }

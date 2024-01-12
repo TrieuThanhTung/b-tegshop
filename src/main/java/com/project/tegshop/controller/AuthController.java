@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin
 public class AuthController {
     private AuthService authService;
     private MailService mailService;
@@ -30,17 +31,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<GenericResponse> registerHandler(@Valid @RequestBody UserDto userDto,
+    public ResponseEntity<?> registerHandler(@Valid @RequestBody UserDto userDto,
                                                            final HttpServletRequest request) throws Exception {
         String token = authService.registerUser(userDto);
-        String url = applicationUrl(request) + "/api/auth/verify-registration?token=" + token;
 
         EmailDetails emailDetails = new EmailDetails(userDto.getEmailId(),
                 GenericMessage.SUBJECT_MAIL,
-                "Link verify: \n" + url);
-        mailService.sendSimpleMail(emailDetails);
+                "Token verify: \n" + token);
+//        mailService.sendSimpleMail(emailDetails);
 
-        GenericResponse response = new GenericResponse(GenericMessage.LINK_CONFIRM_IS_SENT, url);
+//        MessageResponse response = new MessageResponse(GenericMessage.TOKEN_CONFIRM_IS_SENT);
+        GenericResponse response = new GenericResponse(GenericMessage.TOKEN_CONFIRM_IS_SENT, token);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

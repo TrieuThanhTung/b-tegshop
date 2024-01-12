@@ -28,7 +28,7 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private Category category;
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private ProductStatus status;
     @Column(columnDefinition = "BLOB")
     private List<String> images;
     @ManyToOne

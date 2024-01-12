@@ -6,7 +6,7 @@ import com.project.tegshop.exception.ProductException;
 import com.project.tegshop.exception.ProductNotFoundException;
 import com.project.tegshop.model.CartItem;
 import com.project.tegshop.model.Product;
-import com.project.tegshop.model.Status;
+import com.project.tegshop.model.ProductStatus;
 import com.project.tegshop.repository.CartItemRepository;
 import com.project.tegshop.repository.ProductRepository;
 import com.project.tegshop.shared.GenericMessage;
@@ -27,7 +27,7 @@ public class CartItemServiceImpl implements CartItemService{
         Product currentProduct = productRepository.findById(cartItemDto.getProductId())
                 .orElseThrow(() -> new ProductNotFoundException(GenericMessage.PRODUCT_NOT_FOUND));
 
-        if(currentProduct.getQuantity() == 0 || currentProduct.getStatus().equals(Status.OUTOFSTOCK)) {
+        if(currentProduct.getQuantity() == 0 || currentProduct.getStatus().equals(ProductStatus.OUTOFSTOCK)) {
             throw new ProductException(GenericMessage.PRODUCT_OUT_OF_STOCK);
         }
 

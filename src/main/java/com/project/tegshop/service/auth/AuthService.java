@@ -6,7 +6,7 @@ import com.project.tegshop.exception.UserException;
 import com.project.tegshop.exception.RegisterTokenException;
 
 public interface AuthService {
-    String registerUser(UserDto userDto) throws UserException;
+    String registerUser(UserDto userDto) throws UserException, RegisterTokenException;
 
     String loginUser(LoginDto loginDto) throws Exception;
 

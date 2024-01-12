@@ -6,7 +6,7 @@ import com.project.tegshop.exception.ProductNotFoundException;
 import com.project.tegshop.exception.UserException;
 import com.project.tegshop.model.Category;
 import com.project.tegshop.model.Product;
-import com.project.tegshop.model.Status;
+import com.project.tegshop.model.ProductStatus;
 import com.project.tegshop.model.UserEntity;
 import com.project.tegshop.repository.ProductRepository;
 import com.project.tegshop.repository.UserRepository;
@@ -53,9 +53,9 @@ public class ProductServiceImpl implements ProductService{
                 .build();
 
         if(productDto.getQuantity() == 0) {
-            product.setStatus(Status.OUTOFSTOCK);
+            product.setStatus(ProductStatus.OUTOFSTOCK);
         } else {
-            product.setStatus(Status.AVAILABLE);
+            product.setStatus(ProductStatus.AVAILABLE);
         }
 
         return productRepository.save(product);
@@ -105,9 +105,9 @@ public class ProductServiceImpl implements ProductService{
         product.setImages(productDto.getImages());
 
         if(productDto.getQuantity() == 0) {
-            product.setStatus(Status.OUTOFSTOCK);
+            product.setStatus(ProductStatus.OUTOFSTOCK);
         } else {
-            product.setStatus(Status.AVAILABLE);
+            product.setStatus(ProductStatus.AVAILABLE);
         }
 
         return productRepository.save(product);
@@ -123,9 +123,9 @@ public class ProductServiceImpl implements ProductService{
 
         product.setQuantity(quantity);
         if(quantity == 0) {
-            product.setStatus(Status.OUTOFSTOCK);
+            product.setStatus(ProductStatus.OUTOFSTOCK);
         } else {
-            product.setStatus(Status.AVAILABLE);
+            product.setStatus(ProductStatus.AVAILABLE);
         }
 
         return productRepository.save(product);

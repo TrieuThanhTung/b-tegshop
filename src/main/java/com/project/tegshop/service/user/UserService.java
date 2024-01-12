@@ -1,9 +1,12 @@
 package com.project.tegshop.service.user;
 
-import com.project.tegshop.exception.UserException;
+import com.project.tegshop.dto.AddressDto;
+import com.project.tegshop.exception.AddressNotFoundException;
 import com.project.tegshop.exception.UserNotFoundException;
+import com.project.tegshop.model.Address;
 import com.project.tegshop.model.UserEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 public interface UserService{
 
@@ -13,4 +16,11 @@ public interface UserService{
 
     String getCurrentUserEmail();
     UserEntity getCurrentUser() throws UserNotFoundException;
+
+    Address addAddress(AddressDto addressDto) throws UserNotFoundException;
+    List<Address> getAddress() throws UserNotFoundException;
+
+    AddressDto updateAddress(Integer addressId, AddressDto addressDto) throws UserNotFoundException, AddressNotFoundException;
+
+    String deleteAddress(Integer addressId) throws AddressNotFoundException, UserNotFoundException;
 }

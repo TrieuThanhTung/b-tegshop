@@ -1,6 +1,6 @@
 package com.project.tegshop.model;
 
-public enum Status {
+public enum ProductStatus {
     AVAILABLE,
     OUTOFSTOCK
 }

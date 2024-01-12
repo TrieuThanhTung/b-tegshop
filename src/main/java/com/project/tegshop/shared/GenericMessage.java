@@ -4,8 +4,8 @@ public interface GenericMessage {
     String EMAIL_ALREADY_IN_USE = "Email already in use!";
     String USER_WITH_GIVEN_EMAIL_NOT_FOUND = "User with given email not found!";
     String PASSWORD_NOT_MATCH = "Password not match";
-    String LINK_CONFIRM_IS_SENT = "Link confirm is sent to your email." +
-            " Please click link in 30 minutes to confirm registration.";
+    String TOKEN_CONFIRM_IS_SENT = "Token confirm is sent to your email." +
+            " Please USE it in 30 minutes to confirm registration.";
     String REGISTER_SUCCESSFULLY = "Register successfully";
     String LOGIN_SUCCESSFULLY = "Login successfully";
     String REGISTER_SELLER_SUCCESSFULLY = "Register seller successfully";
@@ -34,4 +34,9 @@ public interface GenericMessage {
     String CART_DELETE_ITEM = "Delete product from cart successfully";
     String CART_ITEM_NOT_ADDED = "Product is not added to cart!";
     String CLEAR_CART = "Delete all items in cart successfully";
+    String ADDRESS_ADD = "Add new address successfully";
+    String ADDRESS_GET = "Get addresses successfully";
+    String ADDRESS_NOT_FOUND = "Address not found!";
+    String ADDRESS_UPDATE = "Update address successfully";
+    String ADDRESS_DELETE = "Delete address successfully";
 }
