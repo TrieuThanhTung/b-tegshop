@@ -39,4 +39,5 @@ public interface GenericMessage {
     String ADDRESS_NOT_FOUND = "Address not found!";
     String ADDRESS_UPDATE = "Update address successfully";
     String ADDRESS_DELETE = "Delete address successfully";
+    String ORDER_ADD = "Add new order successfully";
 }

@@ -36,7 +36,6 @@ public class UserEntity {
             foreignKey = @ForeignKey(name = "FK_USER_CART")
     )
     private Cart cart;
-
     @OneToMany(cascade = CascadeType.ALL)
     private List<Address> addresses;
     private Boolean enabled;

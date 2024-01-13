@@ -112,10 +112,10 @@ public class CartServiceImpl implements CartService{
             throw new CartItemException(GenericMessage.CART_EMPTY);
         }
 
-        for(CartItem c : cartItemList) {
-            cartItemList.remove(c);
-            cartItemService.deleteCartItem(c);
-        }
+//        for(CartItem c : cartItemList) {
+//            cartItemList.remove(c);
+//            cartItemService.deleteCartItem(c);
+//        }
 
         cartItemList.clear();
         cartUser.setCartTotal(0L);
