@@ -2,6 +2,7 @@ package com.project.tegshop.config;
 
 import com.project.tegshop.security.JwtAuthEntryPoint;
 import com.project.tegshop.security.JwtAuthenticationFilter;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +29,11 @@ public class SecurityConfig {
 
     private final String[] WHITE_LIST_URLS_PRODUCT = {
             "/api/products/**",
-            "/api/product/**"
+            "/api/product/**",
+            "/v3/api-docs/**",
+            "/v3/api-docs.yaml",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
     };
 
     @Bean
@@ -61,6 +66,13 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter();
+    }
+
+    @Bean
+    public SecurityScheme createAPIKeyScheme() {
+        return new SecurityScheme().type(SecurityScheme.Type.HTTP)
+                .bearerFormat("JWT")
+                .scheme("bearer");
     }
 
 }

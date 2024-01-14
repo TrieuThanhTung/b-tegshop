@@ -40,4 +40,6 @@ public interface GenericMessage {
     String ADDRESS_UPDATE = "Update address successfully";
     String ADDRESS_DELETE = "Delete address successfully";
     String ORDER_ADD = "Add new order successfully";
+    String ORDER_GET = "Get all order successfully";
+    String ORDER_NOT_FOUND = "Order not found!";
 }

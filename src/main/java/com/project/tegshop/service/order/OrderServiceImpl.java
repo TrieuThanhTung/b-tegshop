@@ -3,6 +3,7 @@ package com.project.tegshop.service.order;
 import com.project.tegshop.dto.OrderDto;
 import com.project.tegshop.exception.AddressNotFoundException;
 import com.project.tegshop.exception.CartItemException;
+import com.project.tegshop.exception.OrderNotFoundException;
 import com.project.tegshop.exception.UserNotFoundException;
 import com.project.tegshop.model.*;
 import com.project.tegshop.repository.OrderRepository;
@@ -52,7 +53,7 @@ public class OrderServiceImpl implements OrderService{
         if(cartUser.getCartItemList().size() == 0) {
             throw new CartItemException(GenericMessage.CART_EMPTY);
         }
-
+        Long orderTotal = cartUser.getCartTotal();
         List<CartItem> cartItemOrderList = cartUser.getCartItemList().stream()
                 .toList();
 
@@ -63,11 +64,19 @@ public class OrderServiceImpl implements OrderService{
                 .orderStatus(OrderStatus.PENDING)
                 .description(orderDto.getDescription())
                 .cartItemList(cartItemOrderList)
-                .total(cartUser.getCartTotal())
+                .total(orderTotal)
                 .address(orderAddress)
                 .user(currentUser)
                 .build();
 
         return orderRepository.save(order);
+    }
+
+    @Override
+    public List<Order> getOrder() throws UserNotFoundException, OrderNotFoundException {
+        UserEntity currentUser = userService.getCurrentUser();
+
+        return orderRepository.findByUserId(currentUser.getUserId())
+                .orElseThrow(() -> new OrderNotFoundException(GenericMessage.ORDER_NOT_FOUND));
     }
 }
