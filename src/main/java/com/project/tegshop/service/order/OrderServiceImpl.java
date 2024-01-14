@@ -109,9 +109,25 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    public Order cancelOrder(Integer id) throws OrderNotFoundException, UserNotFoundException, OrderException {
+        Order order = getOrderById(id);
+
+        if(order.getOrderStatus() != OrderStatus.PENDING) {
+            throw new OrderException(GenericMessage.ORDER_CANCELED);
+        }
+
+        order.setOrderStatus(OrderStatus.CANCELED);
+
+        orderRepository.save(order);
+
+        return order;
+    }
+
+    @Override
     public List<Order> getAllOrder() {
         List<Order> orders = orderRepository.findAll();
 
         return orders;
     }
+
 }

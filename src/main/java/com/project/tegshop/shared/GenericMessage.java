@@ -43,4 +43,7 @@ public interface GenericMessage {
     String ORDER_GET = "Get order successfully";
     String ORDER_NOT_FOUND = "Order not found!";
     String ORDER_STATUS_NOT_CHANGE = "Order's status not change!";
+    String ORDER_STATUS = "Change order's status successfully";
+    String ORDER_CANCEL = "Cancel order successfully";
+    String ORDER_CANCELED = "FAIL. Only cancel order when order's status is pending.";
 }

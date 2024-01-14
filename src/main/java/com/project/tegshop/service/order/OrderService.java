@@ -17,4 +17,6 @@ public interface OrderService {
     Order setStatusOrder(StatusOrderDto statusOrderDto) throws OrderNotFoundException, UserNotFoundException, OrderException;
 
     List<Order> getAllOrder();
+
+    Order cancelOrder(Integer id) throws OrderNotFoundException, UserNotFoundException, OrderException;
 }

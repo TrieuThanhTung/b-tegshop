@@ -48,13 +48,22 @@ public class OrderController {
         return new ResponseEntity<>(new GenericResponse(GenericMessage.ORDER_GET, order), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('CUSTOMER', 'SELLER')")
+    @PreAuthorize("hasAnyAuthority('SELLER')")
     @PutMapping("/order")
     public ResponseEntity<?> setStatusOrderHandler(@Valid @RequestBody StatusOrderDto statusOrderDto)
             throws OrderNotFoundException, UserNotFoundException, OrderException {
         Order order = orderService.setStatusOrder(statusOrderDto);
 
-        return new ResponseEntity<>(new GenericResponse(GenericMessage.ORDER_GET, order), HttpStatus.OK);
+        return new ResponseEntity<>(new GenericResponse(GenericMessage.ORDER_STATUS, order), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
+    @PutMapping("/order/{id}/cancel")
+    public ResponseEntity<?> cancelOrderHandler(@PathVariable("id") Integer id)
+            throws OrderNotFoundException, UserNotFoundException, OrderException {
+        Order order = orderService.cancelOrder(id);
+
+        return new ResponseEntity<>(new GenericResponse(GenericMessage.ORDER_CANCEL, order), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
