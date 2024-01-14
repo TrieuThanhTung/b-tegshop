@@ -143,7 +143,7 @@ public class AuthServiceImpl implements AuthService{
     private String generateTokenRegister(UserEntity user) {
         RegisterToken registerToken = RegisterToken.builder()
                 .expiredTime(LocalDateTime.now().plusMinutes(expirationTime))
-                .token(UUID.randomUUID().toString())
+                .token(UUID.randomUUID().toString().substring(0, 6))
                 .user(user)
                 .build();
         registerTokenRepository.save(registerToken);

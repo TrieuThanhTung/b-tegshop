@@ -1,10 +1,8 @@
 package com.project.tegshop.service.order;
 
 import com.project.tegshop.dto.OrderDto;
-import com.project.tegshop.exception.AddressNotFoundException;
-import com.project.tegshop.exception.CartItemException;
-import com.project.tegshop.exception.OrderNotFoundException;
-import com.project.tegshop.exception.UserNotFoundException;
+import com.project.tegshop.dto.StatusOrderDto;
+import com.project.tegshop.exception.*;
 import com.project.tegshop.model.*;
 import com.project.tegshop.repository.OrderRepository;
 import com.project.tegshop.service.cart.CartService;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class OrderServiceImpl implements OrderService{
@@ -78,5 +77,41 @@ public class OrderServiceImpl implements OrderService{
 
         return orderRepository.findByUserId(currentUser.getUserId())
                 .orElseThrow(() -> new OrderNotFoundException(GenericMessage.ORDER_NOT_FOUND));
+    }
+
+    @Override
+    public Order getOrderById(Integer id) throws OrderNotFoundException, UserNotFoundException {
+        UserEntity currentUser = userService.getCurrentUser();
+
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException(GenericMessage.ORDER_NOT_FOUND));
+
+        if(!Objects.equals(order.getUser().getUserId(), currentUser.getUserId())) {
+            throw new OrderNotFoundException(GenericMessage.ORDER_NOT_FOUND);
+        }
+
+        return order;
+    }
+
+    @Override
+    public Order setStatusOrder(StatusOrderDto statusOrderDto)
+            throws OrderNotFoundException, UserNotFoundException, OrderException {
+        Order order = getOrderById(statusOrderDto.getId());
+
+        if(order.getOrderStatus() == statusOrderDto.getStatus()) {
+            throw new OrderException(GenericMessage.ORDER_STATUS_NOT_CHANGE);
+        }
+
+        order.setOrderStatus(statusOrderDto.getStatus());
+        orderRepository.save(order);
+
+        return order;
+    }
+
+    @Override
+    public List<Order> getAllOrder() {
+        List<Order> orders = orderRepository.findAll();
+
+        return orders;
     }
 }
