@@ -1,18 +1,19 @@
 package com.project.tegshop.service.user;
 
 import com.project.tegshop.dto.AddressDto;
+import com.project.tegshop.dto.ChangePasswordDto;
 import com.project.tegshop.exception.AddressNotFoundException;
+import com.project.tegshop.exception.UserException;
 import com.project.tegshop.exception.UserNotFoundException;
-import com.project.tegshop.model.Address;
-import com.project.tegshop.model.Cart;
-import com.project.tegshop.model.Role;
-import com.project.tegshop.model.UserEntity;
+import com.project.tegshop.model.*;
 import com.project.tegshop.repository.AddressRepository;
+import com.project.tegshop.repository.RegisterTokenRepository;
 import com.project.tegshop.repository.UserRepository;
 import com.project.tegshop.shared.GenericMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,11 +23,14 @@ import java.util.Objects;
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private AddressRepository addressRepository;
+    private RegisterTokenRepository registerTokenRepository;
+    private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, AddressRepository addressRepository) {
+    public UserServiceImpl(UserRepository userRepository, AddressRepository addressRepository, RegisterTokenRepository registerTokenRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
+        this.registerTokenRepository = registerTokenRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -40,6 +44,21 @@ public class UserServiceImpl implements UserService {
         userRepository.save(currentUser);
 
         return GenericMessage.REGISTER_SELLER_SUCCESSFULLY;
+    }
+
+    @Override
+    public String changePassword(ChangePasswordDto changePasswordDto)
+            throws UserNotFoundException, UserException {
+        UserEntity currentUser = getCurrentUser();
+
+        if(!passwordEncoder.matches(changePasswordDto.getOldPassword(), currentUser.getPassword())) {
+            throw new UserException(GenericMessage.PASSWORD_NOT_MATCH);
+        }
+
+        currentUser.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+        userRepository.save(currentUser);
+
+        return GenericMessage.USER_CHANGE_PASSWORD;
     }
 
     @Override
@@ -133,6 +152,29 @@ public class UserServiceImpl implements UserService {
 
         return GenericMessage.ADDRESS_DELETE;
     }
+
+    @Override
+    public List<UserEntity> getAllUsers() {
+        List<UserEntity> userList = userRepository.findAll();
+
+        return userList;
+    }
+
+    @Override
+    public String deleteUserById(Integer id) throws UserNotFoundException {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(GenericMessage.USER_WITH_GIVEN_EMAIL_NOT_FOUND));
+
+        RegisterToken registerToken = registerTokenRepository.findByUserId(id)
+                        .orElseThrow(() -> new UserNotFoundException(GenericMessage.REGISTRATION_TOKEN_NOT_FOUND));
+
+        registerTokenRepository.delete(registerToken);
+        userRepository.delete(user);
+
+        return GenericMessage.USER_DELETE;
+    }
+
+
 
     //
     @Override

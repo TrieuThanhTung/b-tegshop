@@ -1,9 +1,12 @@
 package com.project.tegshop.controller;
 
 import com.project.tegshop.dto.AddressDto;
+import com.project.tegshop.dto.ChangePasswordDto;
 import com.project.tegshop.exception.AddressNotFoundException;
+import com.project.tegshop.exception.UserException;
 import com.project.tegshop.exception.UserNotFoundException;
 import com.project.tegshop.model.Address;
+import com.project.tegshop.model.UserEntity;
 import com.project.tegshop.service.user.UserService;
 import com.project.tegshop.shared.GenericMessage;
 import com.project.tegshop.shared.GenericResponse;
@@ -31,6 +34,16 @@ public class UserController {
 
         return new ResponseEntity(new MessageResponse(message), HttpStatus.ACCEPTED);
     }
+
+    @PreAuthorize("hasAnyAuthority('CUSTOMER', 'SELLER')")
+    @PutMapping("/user/change-password")
+    public ResponseEntity<?> changePasswordHandler(@Valid @RequestBody ChangePasswordDto changePasswordDto)
+            throws UserNotFoundException, UserException {
+        String message = userService.changePassword(changePasswordDto);
+
+        return ResponseEntity.ok(new MessageResponse(message));
+    }
+
 
     @PreAuthorize("hasAnyAuthority('CUSTOMER', 'SELLER')")
     @PostMapping("/user/address")
@@ -73,5 +86,21 @@ public class UserController {
     public ResponseEntity<?> addCartToOldUser(@PathVariable("id") Integer id) throws UserNotFoundException {
         String message = userService.addCartToOldUser(id);
         return ResponseEntity.ok(new MessageResponse("Add oke"));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @GetMapping("/admin/users")
+    public ResponseEntity<?> getAllUsersHandler() {
+        List<UserEntity> userList = userService.getAllUsers();
+
+        return new ResponseEntity<>(new GenericResponse(GenericMessage.USER_GET, userList), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @GetMapping("/admin/user/{id}")
+    public ResponseEntity<?> deleteUserByIdHandler(@PathVariable("id") Integer id) throws UserNotFoundException {
+        String message = userService.deleteUserById(id);
+
+        return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
     }
 }
