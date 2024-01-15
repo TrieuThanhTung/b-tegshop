@@ -30,6 +30,10 @@ public class SecurityConfig {
     private final String[] WHITE_LIST_URLS_PRODUCT = {
             "/api/products/**",
             "/api/product/**",
+    };
+
+    private final String[] WHITE_LIST_URLS = {
+            "/api/user/reset-password/**",
             "/v3/api-docs/**",
             "/v3/api-docs.yaml",
             "/swagger-ui/**",
@@ -45,6 +49,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req ->
                         req
                                 .requestMatchers( "/api/auth/**").permitAll()
+                                .requestMatchers(WHITE_LIST_URLS).permitAll()
                                 .requestMatchers(HttpMethod.GET, WHITE_LIST_URLS_PRODUCT).permitAll()
                                 .anyRequest().authenticated()
                 )

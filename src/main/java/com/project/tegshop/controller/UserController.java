@@ -2,11 +2,15 @@ package com.project.tegshop.controller;
 
 import com.project.tegshop.dto.AddressDto;
 import com.project.tegshop.dto.ChangePasswordDto;
+import com.project.tegshop.dto.UpdateProfileDto;
+import com.project.tegshop.dto.resetPassword.RequestEmail;
 import com.project.tegshop.exception.AddressNotFoundException;
 import com.project.tegshop.exception.UserException;
 import com.project.tegshop.exception.UserNotFoundException;
 import com.project.tegshop.model.Address;
+import com.project.tegshop.model.EmailDetails;
 import com.project.tegshop.model.UserEntity;
+import com.project.tegshop.service.mail.MailService;
 import com.project.tegshop.service.user.UserService;
 import com.project.tegshop.shared.GenericMessage;
 import com.project.tegshop.shared.GenericResponse;
@@ -24,8 +28,14 @@ import java.util.List;
 @RequestMapping("/api")
 @CrossOrigin
 public class UserController {
-    @Autowired
+
     private UserService userService;
+    private MailService mailService;
+
+    public UserController(UserService userService, MailService mailService) {
+        this.userService = userService;
+        this.mailService = mailService;
+    }
 
     @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     @PostMapping("/register/seller")
@@ -43,6 +53,41 @@ public class UserController {
 
         return ResponseEntity.ok(new MessageResponse(message));
     }
+
+    @PreAuthorize("hasAnyAuthority('CUSTOMER', 'SELLER')")
+    @GetMapping("/user/profile")
+    public ResponseEntity<?> getProfileHandler()
+            throws UserNotFoundException {
+        UserEntity user = userService.getProfile();
+
+        return ResponseEntity.ok(new GenericResponse(GenericMessage.USER_GET, user));
+    }
+
+    @PreAuthorize("hasAnyAuthority('CUSTOMER', 'SELLER')")
+    @PutMapping("/user/profile")
+    public ResponseEntity<?> updateProfileHandler(@Valid @RequestBody UpdateProfileDto updateProfileDto)
+            throws UserNotFoundException {
+        String message = userService.updateProfile(updateProfileDto);
+
+        return ResponseEntity.ok(new MessageResponse(message));
+    }
+
+    @PostMapping("/user/reset-password/mail")
+    public ResponseEntity<?> sendMailResetPasswordHandler(@Valid @RequestBody RequestEmail requestEmail)
+            throws Exception {
+        String token = userService.sendMailResetPassword(requestEmail);
+
+        EmailDetails emailDetails = EmailDetails.builder()
+                .recipient(requestEmail.getEmailId())
+                .subject(GenericMessage.SUBJECT_MAIL_RESET_PASSWORD)
+                .message("Token for reset password: " + token)
+                .build();
+        mailService.sendSimpleMail(emailDetails);
+
+        return ResponseEntity.ok(new MessageResponse(GenericMessage.PASSWORD_SENT_TOKEN));
+    }
+
+
 
 
     @PreAuthorize("hasAnyAuthority('CUSTOMER', 'SELLER')")

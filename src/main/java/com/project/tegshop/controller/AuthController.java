@@ -38,10 +38,10 @@ public class AuthController {
         EmailDetails emailDetails = new EmailDetails(userDto.getEmailId(),
                 GenericMessage.SUBJECT_MAIL,
                 "Token verify: \n" + token);
-//        mailService.sendSimpleMail(emailDetails);
+        mailService.sendSimpleMail(emailDetails);
 
-//        MessageResponse response = new MessageResponse(GenericMessage.TOKEN_CONFIRM_IS_SENT);
-        GenericResponse response = new GenericResponse(GenericMessage.TOKEN_CONFIRM_IS_SENT, token);
+        MessageResponse response = new MessageResponse(GenericMessage.TOKEN_CONFIRM_IS_SENT);
+//        GenericResponse response = new GenericResponse(GenericMessage.TOKEN_CONFIRM_IS_SENT, token);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

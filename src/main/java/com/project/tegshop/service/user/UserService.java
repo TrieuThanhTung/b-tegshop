@@ -2,6 +2,8 @@ package com.project.tegshop.service.user;
 
 import com.project.tegshop.dto.AddressDto;
 import com.project.tegshop.dto.ChangePasswordDto;
+import com.project.tegshop.dto.UpdateProfileDto;
+import com.project.tegshop.dto.resetPassword.RequestEmail;
 import com.project.tegshop.exception.AddressNotFoundException;
 import com.project.tegshop.exception.UserException;
 import com.project.tegshop.exception.UserNotFoundException;
@@ -31,4 +33,10 @@ public interface UserService{
     String deleteUserById(Integer id) throws UserNotFoundException;
 
     String changePassword(ChangePasswordDto changePasswordDto) throws UserNotFoundException, UserException;
+
+    String updateProfile(UpdateProfileDto updateProfileDto) throws UserNotFoundException;
+
+    UserEntity getProfile() throws UserNotFoundException;
+
+    String sendMailResetPassword(RequestEmail requestEmail) throws UserNotFoundException, UserException;
 }

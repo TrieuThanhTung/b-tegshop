@@ -37,8 +37,11 @@ public class UserEntity {
             referencedColumnName = "cartId",
             foreignKey = @ForeignKey(name = "FK_USER_CART")
     )
+    @JsonIgnore
     private Cart cart;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     private List<Address> addresses;
+    @JsonIgnore
     private Boolean enabled;
 }

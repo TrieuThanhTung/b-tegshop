@@ -16,7 +16,10 @@ public interface GenericMessage {
     String USER_GET = "Get user successfully";
     String USER_DELETE = "Delete user successfully";
     String USER_CHANGE_PASSWORD = "Change password successfully";
+    String USER_UPDATE_PROFILE = "Update profile successfully";
+    String PASSWORD_SENT_TOKEN = "Token for reset password is sent successfully";
     String SUBJECT_MAIL = "Mail verify registration";
+    String SUBJECT_MAIL_RESET_PASSWORD = "Mail reset password";
     String ERROR_WHILE_SENDING_EMAIL = "Error while sending email";
     String ADD_NEW_PRODUCT = "Add new product successfully";
     String PRODUCT_ALREADY_EXISTS = "Product already exists with given name";
