@@ -4,6 +4,7 @@ import com.project.tegshop.dto.AddressDto;
 import com.project.tegshop.dto.ChangePasswordDto;
 import com.project.tegshop.dto.UpdateProfileDto;
 import com.project.tegshop.dto.resetPassword.RequestEmail;
+import com.project.tegshop.dto.resetPassword.ResetPasswordDto;
 import com.project.tegshop.exception.AddressNotFoundException;
 import com.project.tegshop.exception.UserException;
 import com.project.tegshop.exception.UserNotFoundException;
@@ -87,6 +88,13 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse(GenericMessage.PASSWORD_SENT_TOKEN));
     }
 
+    @PostMapping("/user/reset-password")
+    public ResponseEntity<?> resetPasswordHandler(@Valid @RequestBody ResetPasswordDto resetPasswordDto)
+            throws UserException {
+        String message = userService.resetPassword(resetPasswordDto);
+
+        return ResponseEntity.ok(new MessageResponse(message));
+    }
 
 
 

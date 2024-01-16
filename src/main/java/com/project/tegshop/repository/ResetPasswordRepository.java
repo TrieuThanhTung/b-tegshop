@@ -15,4 +15,5 @@ public interface ResetPasswordRepository extends JpaRepository<ResetPasswordToke
     Optional<ResetPasswordToken> findByUserId(@Param("id") Integer id);
 
     Optional<ResetPasswordToken> findByUser(UserEntity user);
+    Optional<ResetPasswordToken> findByToken(String token);
 }

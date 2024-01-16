@@ -4,6 +4,7 @@ import com.project.tegshop.dto.AddressDto;
 import com.project.tegshop.dto.ChangePasswordDto;
 import com.project.tegshop.dto.UpdateProfileDto;
 import com.project.tegshop.dto.resetPassword.RequestEmail;
+import com.project.tegshop.dto.resetPassword.ResetPasswordDto;
 import com.project.tegshop.exception.AddressNotFoundException;
 import com.project.tegshop.exception.UserException;
 import com.project.tegshop.exception.UserNotFoundException;
@@ -103,8 +104,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(GenericMessage.USER_WITH_GIVEN_EMAIL_NOT_FOUND));
 
         Optional<ResetPasswordToken> rpToken = resetPasswordRepository.findByUser(user);
-        if(rpToken.isPresent() && rpToken.get().getExpiredTime().isAfter(LocalDateTime.now())) {
-            throw new UserException("Token for reset password is sent!. Please check your mail");
+        if(rpToken.isPresent()) {
+            ResetPasswordToken resetPT = rpToken.get();
+            if(resetPT.getExpiredTime().isAfter(LocalDateTime.now())) {
+                throw new UserException("Token for reset password is sent!. Please check your mail");
+            }
+            resetPT.setToken(UUID.randomUUID().toString().substring(0, 6));
+            resetPasswordRepository.save(resetPT);
+            return resetPT.getToken();
         }
 
         ResetPasswordToken resetPasswordToken = new ResetPasswordToken();
@@ -114,6 +121,24 @@ public class UserServiceImpl implements UserService {
         resetPasswordRepository.save(resetPasswordToken);
 
         return resetPasswordToken.getToken();
+    }
+
+    @Override
+    public String resetPassword(ResetPasswordDto resetPasswordDto) throws UserException {
+        ResetPasswordToken resetPasswordToken = resetPasswordRepository.findByToken(resetPasswordDto.getToken())
+                .orElseThrow(() -> new UserException(GenericMessage.TOKEN_NOT_FOUND));
+
+        if(resetPasswordToken.getUsed()) {
+            throw new UserException(GenericMessage.TOKEN_RESET_USED);
+        }
+
+        resetPasswordToken.getUser().setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
+        userRepository.save(resetPasswordToken.getUser());
+
+        resetPasswordToken.setUsed(true);
+        resetPasswordRepository.save(resetPasswordToken);
+
+        return GenericMessage.PASSWORD_RESET;
     }
 
 

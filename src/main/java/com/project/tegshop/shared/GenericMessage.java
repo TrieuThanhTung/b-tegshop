@@ -18,6 +18,9 @@ public interface GenericMessage {
     String USER_CHANGE_PASSWORD = "Change password successfully";
     String USER_UPDATE_PROFILE = "Update profile successfully";
     String PASSWORD_SENT_TOKEN = "Token for reset password is sent successfully";
+    String PASSWORD_RESET = "Reset password successfully";
+    String TOKEN_NOT_FOUND = "Token not found!";
+    String TOKEN_RESET_USED = "Token reset password is used!";
     String SUBJECT_MAIL = "Mail verify registration";
     String SUBJECT_MAIL_RESET_PASSWORD = "Mail reset password";
     String ERROR_WHILE_SENDING_EMAIL = "Error while sending email";
