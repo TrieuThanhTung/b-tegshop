@@ -37,14 +37,95 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> requestBodyValidExceptionHandler(MethodArgumentNotValidException exception,
                                                              WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getBindingResult().getFieldError().getDefaultMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ErrorMessage> UserExceptionHandler(UserException exception,
+                                                             WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
                 exception.getMessage(),
                 request.getDescription(false));
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(AuthException.class)
-    public ResponseEntity<ErrorMessage> authExceptionHandler(AuthException exception,
-                                                                       WebRequest request) {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorMessage> userNotFoundExceptionHandler(UserNotFoundException exception,
+                                                             WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RegisterTokenException.class)
+    public ResponseEntity<ErrorMessage> registerNotFoundExceptionHandler(RegisterTokenException exception,
+                                                                         WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<ErrorMessage> productExceptionHandler(ProductException exception,
+                                                                         WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ErrorMessage> productExceptionHandler(ProductNotFoundException exception,
+                                                                WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CartItemException.class)
+    public ResponseEntity<ErrorMessage> cartItemExceptionHandler(CartItemException exception,
+                                                                WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CartItemNotFoundException.class)
+    public ResponseEntity<ErrorMessage> cartItemNotFoundExceptionHandler(CartItemNotFoundException exception,
+                                                                 WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AddressNotFoundException.class)
+    public ResponseEntity<ErrorMessage> addressNotFoundExceptionHandler(AddressNotFoundException exception,
+                                                                         WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ErrorMessage> orderNotFoundExceptionHandler(OrderNotFoundException exception,
+                                                                        WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(OrderException.class)
+    public ResponseEntity<ErrorMessage> orderExceptionHandler(OrderException exception,
+                                                                      WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
                 exception.getMessage(),
                 request.getDescription(false));

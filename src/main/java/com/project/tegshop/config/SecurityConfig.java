@@ -2,6 +2,7 @@ package com.project.tegshop.config;
 
 import com.project.tegshop.security.JwtAuthEntryPoint;
 import com.project.tegshop.security.JwtAuthenticationFilter;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,19 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthEntryPoint jwtAuthEntryPoint;
 
+    private final String[] WHITE_LIST_URLS_PRODUCT = {
+            "/api/products/**",
+            "/api/product/**",
+    };
+
+    private final String[] WHITE_LIST_URLS = {
+            "/api/user/reset-password/**",
+            "/v3/api-docs/**",
+            "/v3/api-docs.yaml",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -35,6 +49,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req ->
                         req
                                 .requestMatchers( "/api/auth/**").permitAll()
+                                .requestMatchers(WHITE_LIST_URLS).permitAll()
+                                .requestMatchers(HttpMethod.GET, WHITE_LIST_URLS_PRODUCT).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
@@ -55,6 +71,13 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter();
+    }
+
+    @Bean
+    public SecurityScheme createAPIKeyScheme() {
+        return new SecurityScheme().type(SecurityScheme.Type.HTTP)
+                .bearerFormat("JWT")
+                .scheme("bearer");
     }
 
 }
