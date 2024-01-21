@@ -7,6 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
@@ -43,6 +44,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorMessage> UserExceptionHandler(UserException exception,
                                                              WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
@@ -52,6 +54,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorMessage> userNotFoundExceptionHandler(UserNotFoundException exception,
                                                              WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),

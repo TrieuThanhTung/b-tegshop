@@ -7,13 +7,16 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 public class TokenResponse {
-    @JsonProperty("token_type")
+    @JsonProperty("tokenType")
     private String tokenType;
-    @JsonProperty("access_token")
+    @JsonProperty("accessToken")
     private String accessToken;
+    @JsonProperty("refreshToken")
+    private String refreshToken;
 
-    public TokenResponse(String accessToken) {
+    public TokenResponse(String accessToken, String refreshToken) {
         this.tokenType = "Bearer";
         this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }
