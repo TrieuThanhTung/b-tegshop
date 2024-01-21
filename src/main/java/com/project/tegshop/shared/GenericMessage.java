@@ -6,6 +6,8 @@ public interface GenericMessage {
     String PASSWORD_NOT_MATCH = "Password not match";
     String TOKEN_CONFIRM_IS_SENT = "Token confirm is sent to your email." +
             " Please USE it in 30 minutes to confirm registration.";
+    String TOKEN_REFRESH = "Refresh token successfully";
+    String TOKEN_REFRESH_EXPIRED = "Refresh token expired or incorrect !";
     String REGISTER_SUCCESSFULLY = "Register successfully";
     String LOGIN_SUCCESSFULLY = "Login successfully";
     String REGISTER_SELLER_SUCCESSFULLY = "Register seller successfully";

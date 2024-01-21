@@ -1,6 +1,7 @@
 package com.project.tegshop.service.auth;
 
 import com.project.tegshop.dto.LoginDto;
+import com.project.tegshop.dto.RefreshTokenDto;
 import com.project.tegshop.dto.UserDto;
 import com.project.tegshop.exception.UserException;
 import com.project.tegshop.exception.RegisterTokenException;
@@ -12,6 +13,8 @@ import com.project.tegshop.repository.RegisterTokenRepository;
 import com.project.tegshop.repository.UserRepository;
 import com.project.tegshop.security.JwtService;
 import com.project.tegshop.shared.GenericMessage;
+import com.project.tegshop.shared.response.TokenResponse;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -92,7 +95,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public String loginUser(LoginDto loginDto) throws UserException {
+    public TokenResponse loginUser(LoginDto loginDto) throws UserException {
         UserEntity existsUser = userRepository.findByEmailId(loginDto.getEmailId())
                 .orElseThrow(() -> new UserException(GenericMessage.USER_WITH_GIVEN_EMAIL_NOT_FOUND));
 
@@ -111,8 +114,27 @@ public class AuthServiceImpl implements AuthService{
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String accessToken = jwtService.generateToken(authentication);
+        String refreshToken = jwtService.generateRefreshToken(authentication);
 
-        return accessToken;
+        return new TokenResponse(accessToken, refreshToken);
+    }
+
+    @Override
+    public TokenResponse refreshToken(RefreshTokenDto refreshTokenDto)
+            throws AuthenticationException, UserException {
+        if(!jwtService.validateToken(refreshTokenDto.getRefreshToken())) {
+            throw new AuthenticationException(GenericMessage.TOKEN_REFRESH_EXPIRED);
+        }
+
+        String userEmail = jwtService.getUsernameFromJWT(refreshTokenDto.getRefreshToken());
+
+        UserEntity existsUser = userRepository.findByEmailId(userEmail)
+                .orElseThrow(() -> new UserException(GenericMessage.USER_WITH_GIVEN_EMAIL_NOT_FOUND));
+
+        String accessToken = jwtService.generateToken(existsUser.getEmailId());
+        String refreshToken = jwtService.generateRefreshToken(existsUser.getEmailId());
+
+        return new TokenResponse(accessToken, refreshToken);
     }
 
     @Override
