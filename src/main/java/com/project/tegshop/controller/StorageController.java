@@ -27,7 +27,7 @@ public class StorageController {
     public ResponseEntity<?> downloadImageHandler(@PathVariable String fileName) {
         byte[] imageData = storageService.downloadImage(fileName);
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
+                .contentType(MediaType.valueOf("image/jpeg"))
                 .body(imageData);
     }
 }

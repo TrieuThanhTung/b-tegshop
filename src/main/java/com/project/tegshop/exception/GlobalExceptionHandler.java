@@ -1,6 +1,7 @@
 package com.project.tegshop.exception;
 
 import com.project.tegshop.shared.ErrorMessage;
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
@@ -18,6 +20,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ErrorMessage> usernameNotFoundExceptionHandler(UsernameNotFoundException exception,
+                                                                         WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<ErrorMessage> SQLExceptionHandler(SQLException exception,
                                                                          WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(LocalDateTime.now(),
                 exception.getMessage(),
