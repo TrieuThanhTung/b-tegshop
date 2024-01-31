@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,4 +19,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     @Query("select p from Product p where p.user.userId = :id")
     Optional<List<Product>> findByUserId(@Param("id") Integer id);
+
+    @Query("select p from Product p order by p.productId DESC limit 10")
+    Optional<List<Product>> findByTrending();
+
 }

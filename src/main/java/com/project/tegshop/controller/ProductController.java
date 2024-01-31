@@ -64,6 +64,13 @@ public class ProductController {
         return new ResponseEntity<>(new GenericResponse(GenericMessage.GET_PRODUCT, productList), HttpStatus.OK);
     }
 
+    @GetMapping("/products/trending")
+    public ResponseEntity<GenericResponse> getTrendingProductsHandler() throws ProductNotFoundException {
+        List<Product> productList = productService.getTrendingProduct();
+
+        return new ResponseEntity<>(new GenericResponse(GenericMessage.GET_PRODUCT, productList), HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAnyAuthority('SELLER')")
     @PutMapping("/product/{id}")
     public ResponseEntity<GenericResponse> updateProductHandler(@PathVariable("id") Integer id,

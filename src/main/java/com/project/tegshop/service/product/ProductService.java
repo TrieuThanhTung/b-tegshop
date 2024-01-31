@@ -25,4 +25,6 @@ public interface ProductService {
     Product updateProductQuantity(Integer id, Integer quantity) throws ProductNotFoundException, UserException, ProductException;
 
     String deleteProductById(Integer id) throws ProductNotFoundException, UserException, ProductException;
+
+    List<Product> getTrendingProduct() throws ProductNotFoundException;
 }

@@ -15,6 +15,7 @@ import com.project.tegshop.shared.GenericMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.ProviderNotFoundException;
 import java.util.List;
 import java.util.Objects;
 
@@ -92,6 +93,14 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public List<Product> getTrendingProduct() throws ProductNotFoundException {
+        List<Product> productList = productRepository.findByTrending()
+                .orElseThrow(() -> new ProductNotFoundException(GenericMessage.PRODUCT_NOT_FOUND));
+
+        return productList;
+    }
+
+    @Override
     public Product updateProduct(Integer id, ProductDto productDto)
             throws ProductNotFoundException, UserException, ProductException {
         Product product = preCheckUpdateAndDelete(id);
@@ -137,6 +146,7 @@ public class ProductServiceImpl implements ProductService{
         productRepository.delete(product);
         return GenericMessage.PRODUCT_DELETE;
     }
+
 
     private Product preCheckUpdateAndDelete(Integer id) throws ProductNotFoundException, UserException, ProductException {
         String userEmail = userService.getCurrentUserEmail();
