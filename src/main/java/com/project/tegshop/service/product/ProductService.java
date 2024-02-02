@@ -16,7 +16,7 @@ public interface ProductService {
 
     Product getProductById(Integer id) throws ProductNotFoundException;
 
-    List<Product> getProductsByCategory(Category category) throws ProductNotFoundException;
+    List<Product> getProductsByCategory(Category category, Integer page, String type) throws ProductNotFoundException;
 
     List<Product> getProductBySellerId(Integer id) throws ProductNotFoundException;
 

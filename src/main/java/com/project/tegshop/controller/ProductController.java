@@ -49,9 +49,11 @@ public class ProductController {
     }
 
     @GetMapping("/products/{category}")
-    public ResponseEntity<GenericResponse> getProductsByCategoryHandler(@PathVariable("category") Category category)
+    public ResponseEntity<GenericResponse> getProductsByCategoryHandler(@PathVariable("category") Category category,
+                                                                        @RequestParam(value = "sort", required = false, defaultValue = "normal") String type,
+                                                                        @RequestParam(value = "page", defaultValue = "1") Integer page)
             throws ProductNotFoundException {
-        List<Product> productList = productService.getProductsByCategory(category);
+        List<Product> productList = productService.getProductsByCategory(category, page, type);
 
         return new ResponseEntity<>(new GenericResponse(GenericMessage.GET_PRODUCT, productList), HttpStatus.OK);
     }
