@@ -21,8 +21,8 @@ public class Product {
     @Column(unique = true, nullable = false)
     private String productName;
     private Integer price;
-    @Column(columnDefinition = "MEDIUMTEXT")
-    private String description;
+    @Column(columnDefinition = "BLOB")
+    private List<String> description;
     private String manufacturer;
     private Integer quantity;
     @Enumerated(EnumType.STRING)

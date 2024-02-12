@@ -13,6 +13,7 @@ import com.project.tegshop.repository.UserRepository;
 import com.project.tegshop.service.user.UserService;
 import com.project.tegshop.shared.GenericMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,8 @@ import java.util.Objects;
 
 @Service
 public class ProductServiceImpl implements ProductService{
+    @Value("${list.product.page}")
+    private int pageOffset;
     private ProductRepository productRepository;
     private UserRepository userRepository;
     private UserService userService;
@@ -76,16 +79,35 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<Product> getProductsByCategory(Category category) throws ProductNotFoundException {
-        List<Product> productList = productRepository.findByCategory(category)
-                .orElseThrow(() -> new ProductNotFoundException(GenericMessage.PRODUCT_NOT_FOUND));
-
+    public List<Product> getProductsByCategory(Category category, Integer page, String type) throws ProductNotFoundException {
+        List<Product> productList;
+         if (type.equalsIgnoreCase("price-asc")) {
+            productList = productRepository.getProductByCategoryAndPriceASC(category, (page - 1) * pageOffset)
+                    .orElseThrow(() -> new ProductNotFoundException(GenericMessage.PRODUCT_NOT_FOUND));
+        } else if (type.equalsIgnoreCase("price-desc")) {
+            productList = productRepository.getProductByCategoryAndPriceDESC(category, (page - 1) * pageOffset)
+                    .orElseThrow(() -> new ProductNotFoundException(GenericMessage.PRODUCT_NOT_FOUND));
+        } else if (type.equalsIgnoreCase("a-z")) {
+            productList = productRepository.getProductByCategoryAndProductName(category, (page - 1) * pageOffset)
+                    .orElseThrow(() -> new ProductNotFoundException(GenericMessage.PRODUCT_NOT_FOUND));
+        } else {
+            productList = productRepository.getProductByCategory(category, (page - 1) * pageOffset)
+                    .orElseThrow(() -> new ProductNotFoundException(GenericMessage.PRODUCT_NOT_FOUND));
+        }
         return productList;
     }
 
     @Override
     public List<Product> getProductBySellerId(Integer id) throws ProductNotFoundException {
         List<Product> productList = productRepository.findByUserId(id)
+                .orElseThrow(() -> new ProductNotFoundException(GenericMessage.PRODUCT_NOT_FOUND));
+
+        return productList;
+    }
+
+    @Override
+    public List<Product> getTrendingProduct() throws ProductNotFoundException {
+        List<Product> productList = productRepository.findByTrending()
                 .orElseThrow(() -> new ProductNotFoundException(GenericMessage.PRODUCT_NOT_FOUND));
 
         return productList;
@@ -137,6 +159,7 @@ public class ProductServiceImpl implements ProductService{
         productRepository.delete(product);
         return GenericMessage.PRODUCT_DELETE;
     }
+
 
     private Product preCheckUpdateAndDelete(Integer id) throws ProductNotFoundException, UserException, ProductException {
         String userEmail = userService.getCurrentUserEmail();

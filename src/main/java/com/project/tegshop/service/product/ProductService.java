@@ -16,7 +16,7 @@ public interface ProductService {
 
     Product getProductById(Integer id) throws ProductNotFoundException;
 
-    List<Product> getProductsByCategory(Category category) throws ProductNotFoundException;
+    List<Product> getProductsByCategory(Category category, Integer page, String type) throws ProductNotFoundException;
 
     List<Product> getProductBySellerId(Integer id) throws ProductNotFoundException;
 
@@ -25,4 +25,6 @@ public interface ProductService {
     Product updateProductQuantity(Integer id, Integer quantity) throws ProductNotFoundException, UserException, ProductException;
 
     String deleteProductById(Integer id) throws ProductNotFoundException, UserException, ProductException;
+
+    List<Product> getTrendingProduct() throws ProductNotFoundException;
 }

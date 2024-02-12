@@ -17,8 +17,8 @@ public class ProductDto {
     private String productName;
     @NotNull
     private Integer price;
-    @NotBlank
-    private String description;
+    @NotNull
+    private List<String> description;
     @NotBlank
     private String manufacturer;
     @NotNull
