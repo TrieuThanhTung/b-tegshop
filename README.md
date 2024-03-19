@@ -21,8 +21,8 @@
 ![image](https://github.com/TrieuThanhTung/b-tegshop/assets/109820897/47c0640a-bf8c-44b6-9130-e44403bcb864)
 
 ## Features
-- Customer and Seller authentication & validation with JWT token having 1 hour for security purposes.
-- Seller features:
+- Customer and Seller (ADMIN) authentication & validation with JWT token having 1 hour for security purposes.
+- Seller (admin) features:
   - Only registered with valid token can add/upate/delete products from main database.
   - Seller can access the details orders.
 - Customers features:
